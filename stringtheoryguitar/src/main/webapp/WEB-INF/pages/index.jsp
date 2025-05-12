@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,30 +32,24 @@
             padding: 0 20px;
             box-sizing: border-box;
         }
-
-        /* Welcome */
         .welcome-section {
             margin-bottom: 50px;
+            text-align: center;
         }
         .welcome-title {
             font-size: 2.8em;
             color: #FFC107;
             font-weight: 700;
-            text-align: center;
             margin-top: 0;
             margin-bottom: 15px;
-            text-shadow: none;
         }
         .welcome-subtitle {
             font-size: 1.1em;
             color: #cccccc;
-            text-align: left;
             margin-top: 0;
             margin-bottom: 35px;
             font-weight: 400;
         }
-
-        /* Featured Guitars */
         .featured-section {
             margin-bottom: 50px;
         }
@@ -60,27 +57,23 @@
             font-size: 1.8em;
             color: #ffffff;
             font-weight: 700;
-            text-align: left;
+            text-align: center;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             padding-bottom: 10px;
             border-bottom: 1px solid #555;
         }
         .featured-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 30px;
         }
-
-        /* Product Card */
         .product-card {
             background-color: #444444;
             border-radius: 8px;
             overflow: hidden;
             width: 100%;
-            max-width: 300px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -93,11 +86,10 @@
         }
         .product-card .card-image {
             height: 200px;
-            background-color: #555555; /* Fallback */
+            background-color: #555555;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease-in-out;
             overflow: hidden;
         }
         .product-card .card-image img {
@@ -105,10 +97,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 0;
-        }
-        .product-card:hover .card-image {
-            /* Optional zoom: transform: scale(1.05); */
         }
         .product-card .card-content {
             padding: 18px;
@@ -117,14 +105,16 @@
             flex-grow: 1;
         }
         .product-card h3 {
-            font-size: 1.15em;
+            font-size: 1.1em;
             color: #ffffff;
             font-weight: 700;
             margin-top: 0;
             margin-bottom: 8px;
             line-height: 1.3;
-            min-height: 2.6em;
+            min-height: 3.9em;
             text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .product-card .price {
             font-size: 1.25em;
@@ -141,8 +131,6 @@
             flex-grow: 1;
             text-align: left;
         }
-
-        /* Buttons */
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -165,8 +153,6 @@
             color: #333333;
             margin-top: auto;
             align-self: center;
-            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-            width: auto; /* Let button size naturally */
         }
         .btn-details:hover {
             background-color: #e0a800;
@@ -186,28 +172,38 @@
         .btn-browse:hover {
             background-color: #666666;
         }
-        .btn-browse:active {
-            transform: scale(0.97);
+        .no-featured-message {
+            text-align: center;
+            font-size: 1.1em;
+            color: #aaa;
+            padding: 20px 0;
+            grid-column: 1 / -1; /* Span all columns if grid is empty */
         }
-
-        /* Responsive */
         @media (max-width: 1024px) {
-            .container { max-width: 95%; }
-            .product-card { max-width: 30%; }
+            .featured-grid {
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            }
         }
         @media (max-width: 768px) {
-            .product-card { max-width: 45%; }
             .welcome-title { font-size: 2.2em; }
-            .welcome-subtitle { text-align: center; }
-            .featured-heading { font-size: 1.6em; text-align: center; }
-            .featured-grid { gap: 20px; }
+            .featured-heading { font-size: 1.6em; }
+            .featured-grid {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 20px;
+            }
         }
         @media (max-width: 540px) {
-            .product-card { max-width: 80%; margin-left: auto; margin-right: auto; }
             .welcome-title { font-size: 1.8em; }
             .welcome-subtitle { font-size: 1em; }
             .featured-heading { font-size: 1.4em; }
-            .btn { font-size: 0.95em; }
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+            .product-card {
+                 max-width: 320px;
+                 margin-left: auto;
+                 margin-right: auto;
+            }
             .container { padding: 0 10px; }
         }
     </style>
@@ -228,19 +224,44 @@
             <section class="featured-section">
                 <h2 class="featured-heading">Featured Guitars</h2>
                 <div class="featured-grid">
-                    <%-- Static Cards with updated links and images --%>
-                    <div class="product-card">
-                        <div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Gibson Thumbnail"></div>
-                        <div class="card-content"><h3>Gibson Custom Shop '59 Les Paul Reissue</h3><p class="price">$6,499.00</p><p class="condition">Condition: Mint (New Arrival)</p><a href="${pageContext.request.contextPath}/product?id=1" class="btn btn-details">View Details</a></div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Fender Thumbnail"></div>
-                        <div class="card-content"><h3>Fender Custom Shop Masterbuilt Strat</h3><p class="price">$5,800.00</p><p class="condition">Condition: Excellent (Staff Pick)</p><a href="${pageContext.request.contextPath}/product?id=2" class="btn btn-details">View Details</a></div>
-                    </div>
-                    <div class="product-card">
-                        <div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Taylor Thumbnail"></div>
-                        <div class="card-content"><h3>Taylor 814ce Acoustic</h3><p class="price">$3,999.00</p><p class="condition">Condition: New</p><a href="${pageContext.request.contextPath}/product?id=3" class="btn btn-details">View Details</a></div>
-                    </div>
+                    <c:choose>
+                        <c:when test="${not empty featuredGuitars}">
+                            <c:forEach var="guitar" items="${featuredGuitars}">
+                                <div class="product-card">
+                                    <div class="card-image">
+                                        <c:choose>
+                                            <c:when test="${not empty guitar.mainImageUrl}">
+                                                <img src="${fn:escapeXml(guitar.mainImageUrl)}"
+                                                     alt="${fn:escapeXml(guitar.brand)} ${fn:escapeXml(guitar.model)}">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:url var="placeholderUrl" value="/images/guitar-deviser.jpg" />
+                                                <img src="${placeholderUrl}"
+                                                     alt="Placeholder Guitar Image">
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="card-content">
+                                        <h3><c:out value="${guitar.brand}"/> <c:out value="${guitar.model}"/></h3>
+                                        <p class="price">
+                                            <fmt:setLocale value="en_US"/>
+                                            <fmt:formatNumber value="${guitar.price}" type="currency" currencySymbol="$"/>
+                                        </p>
+                                        <p class="condition">
+                                            Condition: <c:out value="${guitar.conditionRating}"/>
+                                            <c:if test="${not empty guitar.yearProduced && guitar.yearProduced != 0}">
+                                                | Year: <c:out value="${guitar.yearProduced}"/>
+                                            </c:if>
+                                        </p>
+                                        <a href="${pageContext.request.contextPath}/product?id=${guitar.id}" class="btn btn-details">View Details</a>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="no-featured-message">No featured guitars available at the moment. Check back soon!</p>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </section>
 

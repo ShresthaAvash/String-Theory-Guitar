@@ -8,22 +8,20 @@ public class User implements Serializable {
     private int id;
     private String username;
     private String email;
-    private String fullName; // Added field
+    private String fullName; 
     private String role;
 
-    // Default constructor
     public User() {}
 
-    // Constructor with all fields
+
     public User(int id, String username, String email, String fullName, String role) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.fullName = fullName; // Initialize new field
+        this.fullName = fullName; 
         this.role = role;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -33,8 +31,8 @@ public class User implements Serializable {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getFullName() { return fullName; } // Added getter
-    public void setFullName(String fullName) { this.fullName = fullName; } // Added setter
+    public String getFullName() { return fullName; } 
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
@@ -45,7 +43,7 @@ public class User implements Serializable {
                "id=" + id +
                ", username='" + username + '\'' +
                ", email='" + email + '\'' +
-               ", fullName='" + fullName + '\'' + // Added field
+               ", fullName='" + fullName + '\'' + 
                ", role='" + role + '\'' +
                '}';
     }

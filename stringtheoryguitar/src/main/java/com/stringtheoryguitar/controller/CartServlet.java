@@ -1,6 +1,5 @@
 package com.stringtheoryguitar.controller;
 
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,26 +16,30 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        if ("true".equals(request.getParameter("added"))) {
-            request.setAttribute("successMessage", "Item 'added' to cart (Demo).");
-        }
-
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/pages/cart.jsp");
         dispatcher.forward(request, response);
     }
 
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
 
-        String productId = request.getParameter("productId");
-        String quantityStr = request.getParameter("quantity");
+        if ("addToCart".equals(action)) {
+            String productId = request.getParameter("productId");
+            String quantityStr = request.getParameter("quantity");
+            System.out.println("CartServlet (POST): DEMO - 'Add to Cart' action received. Product ID: " + productId + ", Quantity: " + quantityStr);
+            response.sendRedirect(request.getContextPath() + "/cart");
+            return;
+        }
 
-        System.out.println("DEMO: Add to Cart POST received for Product ID: " + productId
-                           + ", Quantity: " + quantityStr + " (Functionality Disabled).");
-
-        response.sendRedirect(request.getContextPath() + "/cart?added=true");
+        if ("buyNow".equals(action)) {
+            System.out.println("CartServlet (POST): DEMO - 'Buy Now' action received.");
+            response.sendRedirect(request.getContextPath() + "/cart");
+            return;
+        }
+        
+        System.out.println("CartServlet (POST): Received POST with no specific recognized 'action', forwarding to doGet.");
+        doGet(request, response);
     }
 }

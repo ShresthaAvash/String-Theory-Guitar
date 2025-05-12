@@ -1,14 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%-- Security Check Removed/Commented for static demo --%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart - String Theory Guitars</title>
+    <title>Your Shopping Cart - String Theory Guitars</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
@@ -23,193 +21,97 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
         .main-content-area {
             flex-grow: 1;
             padding-bottom: 50px;
         }
-
         .container {
-            max-width: 950px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 0 20px;
             box-sizing: border-box;
         }
-
         .page-title {
             font-size: 2.5em;
             color: #FFC107;
             font-weight: 700;
             text-align: center;
             margin-top: 0;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
-
-        /* Cart Table */
-        .cart-table-wrapper {
+        .cart-content-wrapper {
             background-color: #3a3a3a;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            overflow-x: auto;
-        }
-
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        .cart-table th,
-        .cart-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #555;
-        }
-
-        .cart-table thead th {
-            background-color: #484848;
-            color: #FFC107;
-            font-weight: 700;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        .cart-table tbody td {
-            font-size: 1em;
             color: #e0e0e0;
-            font-weight: 400;
-            vertical-align: middle;
         }
-
-        .col-product {
-            width: 50%;
-        }
-        .col-price,
-        .col-quantity,
-        .col-subtotal {
-            width: 15%;
-            text-align: right;
-        }
-        .col-remove {
-            width: 5%;
-            text-align: center;
-        }
-
-        .product-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .product-thumb {
-            width: 65px;
-            height: 65px;
-            object-fit: cover;
-            border-radius: 4px;
-            background-color: #555;
-            border: 1px solid #666;
-        }
-        .product-name {
-            color: #ffffff;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 3px;
-        }
-        .product-desc {
-            font-size: 0.85em;
-            color: #bbb;
-        }
-
-        .quantity-display {
-            font-weight: 700;
-        }
-
-        .remove-item-btn {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 1.2em;
-            transition: color 0.2s ease, transform 0.1s ease;
-            display: inline-block;
-        }
-        .remove-item-btn:hover {
-            color: #d9534f;
-            transform: scale(1.1);
-        }
-
-        /* Cart Summary */
-        .cart-summary {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #555;
-            max-width: 350px;
-            margin-left: auto; /* Align to the right */
-            text-align: right;
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        .summary-row span:first-child {
-            color: #cccccc;
-            font-weight: 400;
-        }
-        .summary-row span:last-child {
-            font-weight: 700;
-        }
-        .summary-total {
-            font-size: 1.3em;
+        .cart-content-wrapper h2 {
             color: #FFC107;
-            font-weight: 700;
-        }
-
-        /* Cart Actions */
-        .cart-actions {
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .btn { /* General button style */
-            display: inline-block;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.0em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            margin-top: 0;
             text-align: center;
-            font-family: inherit;
-            white-space: nowrap;
+            margin-bottom: 25px;
         }
-        .btn:active {
-            transform: scale(0.97);
+        .cart-empty-info {
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: center;
+            padding: 20px 0;
+            color: #aaa;
         }
-        .btn-continue {
-            background-color: #6c757d;
-            color: #ffffff;
+        .btn-inert {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: default;
+            border: none;
+            background-color: #5a5a5a;
+            color: #ababab;
+            opacity: 0.7;
         }
-        .btn-continue:hover {
-            background-color: #5a6268;
-        }
-        .btn-buy-now {
+        .btn-continue-shopping {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
             background-color: #FFC107;
-            color: #333333;
+            color: #333;
+            transition: background-color 0.2s ease;
         }
-        .btn-buy-now:hover {
+        .btn-continue-shopping:hover {
             background-color: #e0a800;
         }
-
-        /* Messages */
+        .btn-buy-now-final {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto 0 auto;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+        .btn-buy-now-final:hover {
+             background-color: #45a049;
+        }
         .message {
             padding: 10px 15px;
             margin-bottom: 20px;
@@ -219,77 +121,46 @@
             font-size: 0.95em;
             line-height: 1.4;
         }
-        .success-message {
-            background-color: #5cb85c;
+        .error-message {
+            background-color: #d9534f;
             color: white;
-            border: 1px solid #4cae4c;
+            border: 1px solid #d43f3a;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-title { font-size: 2em; }
-            .cart-table thead { display: none; }
-            .cart-table,
-            .cart-table tbody,
-            .cart-table tr,
-            .cart-table td {
-                display: block;
-                width: 100%;
-            }
-            .cart-table tr {
-                margin-bottom: 15px;
-                border-bottom: 2px solid #555;
-                padding-bottom: 10px;
-            }
-            .cart-table td {
-                text-align: right;
-                padding-left: 40%;
-                position: relative;
-                border-bottom: 1px dotted #666;
-            }
-            .cart-table td:last-child {
-                border-bottom: 0;
-            }
-            .cart-table td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: 35%;
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
-                font-weight: 700;
-                color: #FFC107;
-            }
-            .col-product {
-                padding-left: 10px !important;
-                text-align: left !important;
-            }
-            .col-product::before {
-                 display: none;
-            }
-            .product-info {
-                 justify-content: flex-start;
-            }
-            .cart-summary {
-                 max-width: none;
-                 margin-left: 0;
-            }
-            .cart-actions {
-                justify-content: center;
-            }
+        .dummy-item-row {
+            border: 1px dashed #555;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        @media (max-width: 480px) {
-             .container { padding: 0 15px; }
-             .page-title { font-size: 1.8em; }
-             .cart-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-             .cart-actions .btn {
-                 width: 100%;
-                 box-sizing: border-box;
-            }
+        .dummy-item-row div:nth-child(1) {
+            width:80px; height:80px; background-color:#555; border-radius:4px; display:flex; align-items:center; justify-content:center;
+        }
+        .dummy-item-row div:nth-child(2) {
+            flex-grow:1;
+        }
+        .dummy-item-row h4 {
+            margin:0 0 5px 0; color: #FFC107;
+        }
+        .dummy-item-row p {
+             margin:0 0 5px 0; font-size:0.9em;
+        }
+        .dummy-item-row input[type="number"] {
+            width:50px; padding:5px; background-color:#505050; color:#e0e0e0; border:1px solid #666; border-radius:3px;
+        }
+        .dummy-item-row div:nth-child(3) {
+            text-align:right;
+        }
+        .dummy-item-row .item-total-price {
+            margin:0 0 10px 0; font-weight:bold; color: #FFC107;
+        }
+         .cart-total-summary {
+            text-align:right; margin-top:20px; padding-top:20px; border-top:1px solid #555;
+        }
+        .cart-total-summary h3 {
+            color: #FFC107; margin-bottom: 20px;
         }
     </style>
 </head>
@@ -301,91 +172,65 @@
 
     <div class="main-content-area">
         <div class="container">
-
             <h1 class="page-title">Your Shopping Cart</h1>
 
-            <c:if test="${not empty successMessage || param.added == 'true'}">
-                <p class="message success-message">Item 'added' to cart (Demo).</p>
+            <c:if test="${not empty requestScope.cartErrorMessage}">
+                 <p class="message error-message"><c:out value="${requestScope.cartErrorMessage}"/></p>
             </c:if>
 
-            <div class="cart-table-wrapper">
-                <table class="cart-table">
-                    <thead>
-                        <tr>
-                            <th class="col-product">Product</th>
-                            <th class="col-price">Price</th>
-                            <th class="col-quantity">Quantity</th>
-                            <th class="col-subtotal">Subtotal</th>
-                            <th class="col-remove"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%-- Static Placeholder Cart Items --%>
-                        <tr>
-                            <td data-label="Product" class="col-product">
-                                <div class="product-info">
-                                    <img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Fender Strat" class="product-thumb">
-                                    <div>
-                                        <span class="product-name">Fender American Standard Stratocaster</span>
-                                        <span class="product-desc">Excellent Condition, Olympic White</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td data-label="Price" class="col-price">$1,499.00</td>
-                            <td data-label="Quantity" class="col-quantity">
-                                <span class="quantity-display">1</span>
-                            </td>
-                            <td data-label="Subtotal" class="col-subtotal">$1,499.00</td>
-                            <td data-label="Remove" class="col-remove">
-                                <a href="#" class="remove-item-btn" title="Remove Item (Disabled)" onclick="alert('DEMO: Remove item functionality not implemented.'); return false;">
-                                    <i class="fas fa-times-circle"></i>
-                                </a>
-                            </td>
-                        </tr>
-                         <tr>
-                            <td data-label="Product" class="col-product">
-                                <div class="product-info">
-                                    <img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Gibson LP" class="product-thumb">
-                                    <div>
-                                        <span class="product-name">Gibson Les Paul Standard '50s</span>
-                                        <span class="product-desc">Mint Condition, Tobacco Burst</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td data-label="Price" class="col-price">$2,799.00</td>
-                            <td data-label="Quantity" class="col-quantity">
-                                <span class="quantity-display">1</span>
-                            </td>
-                            <td data-label="Subtotal" class="col-subtotal">$2,799.00</td>
-                            <td data-label="Remove" class="col-remove">
-                                <a href="#" class="remove-item-btn" title="Remove Item (Disabled)" onclick="alert('DEMO: Remove item functionality not implemented.'); return false;">
-                                    <i class="fas fa-times-circle"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="cart-content-wrapper">
+                <h2>Shopping Cart</h2>
+
+                <div class="dummy-item-row">
+                    <div>
+                        <i class="fas fa-guitar fa-2x" style="color:#777;"></i>
+                    </div>
+                    <div>
+                        <h4 >Example Guitar</h4>
+                        <p >Price: $1,234.56</p>
+                        <label for="qty_example" style="font-size:0.9em;">Qty:</label>
+                        <input type="number" id="qty_example" value="1" min="1" readonly>
+                        <button type="button" class="btn-inert" style="padding: 5px 10px; font-size:0.9em; margin-left:10px;">Update</button>
+                    </div>
+                    <div>
+                        <p class="item-total-price">$1,234.56</p>
+                        <button type="button" class="btn-inert" style="padding: 5px 10px; font-size:0.9em;">Remove</button>
+                    </div>
+                </div>
+
+                <div class="cart-total-summary">
+                    <h3>Total: $1,234.56</h3>
+                </div>
+
+                <button type="button" class="btn-buy-now-final">Buy Now</button>
             </div>
 
-            <div class="cart-summary">
-                <div class="summary-row"><span>Subtotal:</span><span>$4,298.00</span></div>
-                <div class="summary-row"><span>Shipping:</span><span>Calculated at checkout</span></div>
-                <div class="summary-row summary-total"><span>Total:</span><span>$4,298.00</span></div>
-            </div>
-
-            <div class="cart-actions">
-                <a href="${pageContext.request.contextPath}/browse" class="btn btn-continue">
-                    <i class="fas fa-arrow-left"></i> Continue Shopping
-                </a>
-                <button type="button" class="btn btn-buy-now" onclick="alert('DEMO: Checkout functionality not implemented.');">
-                    Buy Now <i class="fas fa-credit-card"></i>
-                </button>
+            <div style="text-align: center; margin-top: 30px;">
+                <c:url var="browseAllUrl" value="/browse"/>
+                <a href="${browseAllUrl}" class="btn-continue-shopping">Continue Shopping</a>
             </div>
 
         </div>
     </div>
 
     <jsp:include page="/WEB-INF/pages/footer.jsp" />
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageElements = document.querySelectorAll('.message.error-message');
+            messageElements.forEach(function(element) {
+                if (element) {
+                    setTimeout(function() {
+                        element.style.transition = 'opacity 0.5s ease-out';
+                        element.style.opacity = '0';
+                        setTimeout(function() {
+                            element.style.display = 'none';
+                        }, 500);
+                    }, 3500);
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

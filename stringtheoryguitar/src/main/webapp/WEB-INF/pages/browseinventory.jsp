@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,8 +40,6 @@
             margin-top: 0;
             margin-bottom: 40px;
         }
-
-        /* Filter Bar */
         .filter-bar {
             background-color: #3a3a3a;
             padding: 15px 20px;
@@ -65,8 +66,6 @@
         .filter-input::placeholder {
             color: #aaa;
         }
-
-        /* Buttons */
         .btn {
             display: inline-block;
             padding: 8px 18px;
@@ -93,15 +92,11 @@
         .filter-button:hover {
             background-color: #666666;
         }
-
-        /* Product Grid */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
         }
-
-        /* Product Card */
         .product-card {
             background-color: #444444;
             border-radius: 8px;
@@ -123,7 +118,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease-in-out;
             overflow: hidden;
         }
         .product-card .card-image img {
@@ -132,9 +126,6 @@
             height: 100%;
             object-fit: cover;
             border-radius: 0;
-        }
-        .product-card:hover .card-image {
-            /* transform: scale(1.05); */
         }
         .product-card .card-content {
             padding: 20px;
@@ -151,6 +142,8 @@
             line-height: 1.3;
             min-height: 2.6em;
             text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .product-card .price {
             font-size: 1.25em;
@@ -181,8 +174,14 @@
             background-color: #e0a800;
             transform: scale(1.05);
         }
-
-        /* Responsive */
+        .no-items-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 1.2em;
+            color: #aaa;
+            padding: 40px 0;
+            font-style: italic;
+        }
         @media (max-width: 768px) {
             .page-title { font-size: 2.2em; }
             .filter-bar { gap: 10px; }
@@ -195,7 +194,7 @@
             .filter-bar { flex-direction: column; align-items: stretch; }
             .filter-input, .filter-select, .filter-button { width: 100%; box-sizing: border-box; }
             .product-grid { grid-template-columns: 1fr; }
-            .product-card { max-width: 90%; margin: 0 auto; }
+            .product-card { max-width: 90%; margin-left: auto; margin-right: auto; }
         }
     </style>
 </head>
@@ -210,26 +209,68 @@
             <h1 class="page-title">Browse Our Collection</h1>
             <div class="filter-bar">
                  <form id="filterFormBrowse" action="${pageContext.request.contextPath}/browse" method="get" style="display: contents;">
-                    <input type="text" class="filter-input" name="search" placeholder="Search by Make, Model..." value="${param.search}">
+                    <input type="text" class="filter-input" name="search" placeholder="Search by Brand, Model..." value="${fn:escapeXml(searchTerm)}">
                     <select class="filter-select" name="sort">
-                        <option value="" disabled ${empty param.sort ? 'selected' : ''}>Sort By...</option>
-                        <option value="price_asc" ${param.sort == 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
-                        <option value="price_desc" ${param.sort == 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
-                        <option value="make_asc" ${param.sort == 'make_asc' ? 'selected' : ''}>Make: A to Z</option>
-                        <option value="added_desc" ${param.sort == 'added_desc' ? 'selected' : ''}>Date Added: Newest</option>
+                        <option value="" disabled ${empty sortOrder ? 'selected' : ''}>Sort By...</option>
+                        <option value="price_asc" ${sortOrder == 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
+                        <option value="price_desc" ${sortOrder == 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
+                        <option value="make_asc" ${sortOrder == 'make_asc' ? 'selected' : ''}>Brand: A to Z</option>
+                        <option value="make_desc" ${sortOrder == 'make_desc' ? 'selected' : ''}>Brand: Z to A</option>
+                        <option value="date_desc" ${sortOrder == 'date_desc' || empty sortOrder ? 'selected' : ''}>Date Added: Newest</option>
+                        <option value="date_asc" ${sortOrder == 'date_asc' ? 'selected' : ''}>Date Added: Oldest</option>
                     </select>
                     <button type="submit" class="btn filter-button">Apply</button>
                  </form>
             </div>
 
             <div class="product-grid">
-                <%-- Static Placeholder Cards with updated links and images --%>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Fender Thumbnail"></div><div class="card-content"><h3>Fender American Standard Stratocaster</h3><p class="price">$1,499.00</p><p class="condition">Condition: Excellent</p><a href="${pageContext.request.contextPath}/product?id=1" class="btn btn-details">View Details</a></div></div>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Gibson Thumbnail"></div><div class="card-content"><h3>Gibson Les Paul Standard '50s</h3><p class="price">$2,799.00</p><p class="condition">Condition: Mint</p><a href="${pageContext.request.contextPath}/product?id=2" class="btn btn-details">View Details</a></div></div>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="PRS Thumbnail"></div><div class="card-content"><h3>PRS Custom 24</h3><p class="price">$3,200.00</p><p class="condition">Condition: New</p><a href="${pageContext.request.contextPath}/product?id=3" class="btn btn-details">View Details</a></div></div>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Ibanez Thumbnail"></div><div class="card-content"><h3>Ibanez RG550</h3><p class="price">$999.00</p><p class="condition">Condition: Very Good</p><a href="${pageContext.request.contextPath}/product?id=4" class="btn btn-details">View Details</a></div></div>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Martin Thumbnail"></div><div class="card-content"><h3>Martin D-28</h3><p class="price">$3,500.00</p><p class="condition">Condition: Excellent</p><a href="${pageContext.request.contextPath}/product?id=5" class="btn btn-details">View Details</a></div></div>
-                <div class="product-card"><div class="card-image"><img src="${pageContext.request.contextPath}/images/guitardeviser.jpg" alt="Gretsch Thumbnail"></div><div class="card-content"><h3>Gretsch White Falcon</h3><p class="price">$3,800.00</p><p class="condition">Condition: Mint</p><a href="${pageContext.request.contextPath}/product?id=6" class="btn btn-details">View Details</a></div></div>
+                <c:choose>
+                    <c:when test="${not empty guitars}">
+                        <c:forEach var="guitar" items="${guitars}">
+                            <div class="product-card">
+                                <div class="card-image">
+                                    <c:choose>
+                                        <c:when test="${not empty guitar.mainImageUrl}">
+                                            <img src="${fn:escapeXml(guitar.mainImageUrl)}"
+                                                 alt="${fn:escapeXml(guitar.brand)} ${fn:escapeXml(guitar.model)}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:url var="placeholderUrl" value="/images/guitar-deviser.jpg" />
+                                            <img src="${placeholderUrl}"
+                                                 alt="Placeholder Guitar Image">
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="card-content">
+                                    <h3><c:out value="${guitar.brand}"/> <c:out value="${guitar.model}"/></h3>
+                                    <p class="price">
+                                        <fmt:setLocale value="en_US"/>
+                                        <fmt:formatNumber value="${guitar.price}" type="currency" currencySymbol="$"/>
+                                    </p>
+                                    <p class="condition">
+                                        Condition: <c:out value="${guitar.conditionRating}"/>
+                                        <c:if test="${not empty guitar.yearProduced && guitar.yearProduced != 0}">
+                                            | Year: <c:out value="${guitar.yearProduced}"/>
+                                        </c:if>
+                                    </p>
+                                    <a href="${pageContext.request.contextPath}/product?id=${guitar.id}" class="btn btn-details">View Details</a>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="no-items-message">
+                            <c:choose>
+                                <c:when test="${not empty searchTerm}">
+                                    No guitars found matching your search term: "<strong><c:out value="${searchTerm}"/></strong>".
+                                </c:when>
+                                <c:otherwise>
+                                    No guitars currently in inventory. Please check back later!
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

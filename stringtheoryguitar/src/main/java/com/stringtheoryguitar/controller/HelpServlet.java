@@ -1,4 +1,4 @@
-package com.stringtheoryguitar.controller; // UPDATED
+package com.stringtheoryguitar.controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;

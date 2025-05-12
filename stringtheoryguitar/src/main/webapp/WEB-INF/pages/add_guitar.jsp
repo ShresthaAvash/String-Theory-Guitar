@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Guitar - String Theory Guitars</title>
     <style>
-        /* --- Add Guitar CSS --- */
         body {
             margin: 0;
             padding: 0;
@@ -73,6 +73,7 @@
         }
         .form-group input[type="text"],
         .form-group input[type="number"],
+        .form-group input[type="url"],
         .form-group select,
         .form-group textarea {
             font-family: inherit;
@@ -96,29 +97,7 @@
             resize: vertical;
             line-height: 1.5;
         }
-        .form-group input[type="file"] {
-            background-color: transparent;
-            border: none;
-            padding: 5px 0;
-            color: #ccc;
-            font-size: 0.95em;
-        }
-        .form-group input[type="file"]::file-selector-button {
-            padding: 6px 15px;
-            margin-right: 10px;
-            background-color: #5a5a5a;
-            color: #e0e0e0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.9em;
-            transition: background-color 0.2s ease;
-        }
-        .form-group input[type="file"]::file-selector-button:hover {
-            background-color: #686868;
-        }
-        .file-upload-info {
+        .image-url-info {
             font-size: 0.85em;
             color: #bbb;
             margin-top: 5px;
@@ -164,19 +143,24 @@
             color: white;
             border: 1px solid #d43f3a;
         }
+        .error-message ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 5px;
+            text-align: left;
+        }
         .success-message {
             background-color: #5cb85c;
             color: white;
             border: 1px solid #4cae4c;
         }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .page-title { font-size: 2em; }
             .form-box { padding: 25px 20px; }
             .section-title { font-size: 1.1em; }
             .form-group input[type="text"],
             .form-group input[type="number"],
+            .form-group input[type="url"],
             .form-group select,
             .form-group textarea { padding: 9px 12px; font-size: 0.95em; }
             .btn-submit-guitar { font-size: 1em; padding: 10px 20px; }
@@ -197,88 +181,91 @@
         <div class="container">
             <h1 class="page-title">Add New Guitar to Inventory</h1>
             <div class="form-box">
-                <c:if test="${not empty errorMessage}"><p class="message error-message"><c:out value="${errorMessage}"/></p></c:if>
-                <%-- Show success message from simulated POST --%>
-                <c:if test="${param.success == 'true'}"><p class="message success-message">Demo: Guitar 'added' successfully!</p></c:if>
+                <c:if test="${not empty errors}">
+                    <div class="message error-message">
+                        <strong>Please correct the following errors:</strong>
+                        <ul>
+                            <c:forEach var="error" items="${errors}">
+                                <li><c:out value="${error}"/></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </c:if>
+                <c:if test="${not empty errorMessage && empty errors}"><p class="message error-message"><c:out value="${errorMessage}"/></p></c:if>
+                <c:if test="${not empty successMessage}"><p class="message success-message"><c:out value="${successMessage}"/></p></c:if>
 
-                <form action="${pageContext.request.contextPath}/add-guitar" method="post" enctype="multipart/form-data" novalidate>
-                    <%-- Basic Information Section --%>
+                <form action="${pageContext.request.contextPath}/add-guitar" method="post" novalidate>
                     <div class="form-section">
                         <h3 class="section-title">Basic Information</h3>
                         <div class="form-group">
-                            <label for="brand">Brand</label> <%-- Changed Label --%>
-                            <input type="text" id="brand" name="brand" required value="<c:out value='${param.brand}'/>"> <%-- Changed name/id --%>
+                            <label for="brand">Brand</label>
+                            <input type="text" id="brand" name="brand" required value="${fn:escapeXml(guitar.brand)}">
                         </div>
                         <div class="form-group">
                             <label for="model">Model</label>
-                            <input type="text" id="model" name="model" required value="<c:out value='${param.model}'/>">
+                            <input type="text" id="model" name="model" required value="${fn:escapeXml(guitar.model)}">
                         </div>
-                        <div class="form-group"> <%-- Optional Guitar Type --%>
+                        <div class="form-group">
                             <label for="guitarType">Type (e.g., Solid Body, Acoustic)</label>
-                            <input type="text" id="guitarType" name="guitarType" value="<c:out value='${param.guitarType}'/>">
+                            <input type="text" id="guitarType" name="guitarType" value="${fn:escapeXml(guitar.guitarType)}">
                         </div>
                         <div class="form-group">
                             <label for="year">Year</label>
-                            <input type="number" id="year" name="year" min="1900" max="<%= java.time.Year.now().getValue() + 1 %>" value="<c:out value='${param.year}'/>">
+                            <input type="number" id="year" name="year" min="1900" max="<%= java.time.Year.now().getValue() + 1 %>" value="${guitar.yearProduced}">
                         </div>
                          <div class="form-group">
                             <label for="serialNumber">Serial Number</label>
-                            <input type="text" id="serialNumber" name="serialNumber" value="<c:out value='${param.serialNumber}'/>">
+                            <input type="text" id="serialNumber" name="serialNumber" value="${fn:escapeXml(guitar.serialNumber)}">
                         </div>
                          <div class="form-group">
                             <label for="finishColor">Finish / Color</label>
-                            <input type="text" id="finishColor" name="finishColor" value="<c:out value='${param.finishColor}'/>">
+                            <input type="text" id="finishColor" name="finishColor" value="${fn:escapeXml(guitar.finishColor)}">
                         </div>
                     </div>
 
-                     <%-- Specifications Section --%>
                     <div class="form-section">
                         <h3 class="section-title">Specifications</h3>
-                        <div class="form-group"><label for="bodyWood">Body Wood</label><input type="text" id="bodyWood" name="bodyWood" value="<c:out value='${param.bodyWood}'/>"></div>
-                        <div class="form-group"><label for="neckWood">Neck Wood</label><input type="text" id="neckWood" name="neckWood" value="<c:out value='${param.neckWood}'/>"></div>
-                        <div class="form-group"><label for="fretboardWood">Fretboard Wood</label><input type="text" id="fretboardWood" name="fretboardWood" value="<c:out value='${param.fretboardWood}'/>"></div>
-                        <div class="form-group"><label for="pickups">Pickups</label><input type="text" id="pickups" name="pickups" value="<c:out value='${param.pickups}'/>"></div>
+                        <div class="form-group"><label for="bodyWood">Body Wood</label><input type="text" id="bodyWood" name="bodyWood" value="${fn:escapeXml(guitar.bodyWood)}"></div>
+                        <div class="form-group"><label for="neckWood">Neck Wood</label><input type="text" id="neckWood" name="neckWood" value="${fn:escapeXml(guitar.neckWood)}"></div>
+                        <div class="form-group"><label for="fretboardWood">Fretboard Wood</label><input type="text" id="fretboardWood" name="fretboardWood" value="${fn:escapeXml(guitar.fretboardWood)}"></div>
+                        <div class="form-group"><label for="pickups">Pickups</label><input type="text" id="pickups" name="pickups" value="${fn:escapeXml(guitar.pickups)}"></div>
                     </div>
 
-                     <%-- Condition & Pricing Section --%>
                     <div class="form-section">
                          <h3 class="section-title">Condition & Pricing</h3>
                          <div class="form-group">
                             <label for="condition">Condition</label>
                             <select id="condition" name="condition">
-                                <option value="" disabled ${empty param.condition ? 'selected' : ''}>-- Select Condition --</option>
-                                <option value="New" ${param.condition == 'New' ? 'selected' : ''}>New</option>
-                                <option value="Mint" ${param.condition == 'Mint' ? 'selected' : ''}>Mint</option>
-                                <option value="Excellent" ${param.condition == 'Excellent' ? 'selected' : ''}>Excellent</option>
-                                <option value="Very Good" ${param.condition == 'Very Good' ? 'selected' : ''}>Very Good</option>
-                                <option value="Good" ${param.condition == 'Good' ? 'selected' : ''}>Good</option>
-                                <option value="Fair" ${param.condition == 'Fair' ? 'selected' : ''}>Fair</option>
-                                <option value="Poor" ${param.condition == 'Poor' ? 'selected' : ''}>Poor</option>
+                                <option value="" disabled ${empty guitar.conditionRating ? 'selected' : ''}>-- Select Condition --</option>
+                                <option value="New" ${guitar.conditionRating == 'New' ? 'selected' : ''}>New</option>
+                                <option value="Mint" ${guitar.conditionRating == 'Mint' ? 'selected' : ''}>Mint</option>
+                                <option value="Excellent" ${guitar.conditionRating == 'Excellent' ? 'selected' : ''}>Excellent</option>
+                                <option value="Very Good" ${guitar.conditionRating == 'Very Good' ? 'selected' : ''}>Very Good</option>
+                                <option value="Good" ${guitar.conditionRating == 'Good' ? 'selected' : ''}>Good</option>
+                                <option value="Fair" ${guitar.conditionRating == 'Fair' ? 'selected' : ''}>Fair</option>
+                                <option value="Poor" ${guitar.conditionRating == 'Poor' ? 'selected' : ''}>Poor</option>
                             </select>
                          </div>
                           <div class="form-group">
                              <label for="conditionDetails">Condition Details / Description</label>
-                             <textarea id="conditionDetails" name="conditionDetails" rows="4"><c:out value='${param.conditionDetails}'/></textarea>
+                             <textarea id="conditionDetails" name="conditionDetails" rows="4">${fn:escapeXml(guitar.conditionDetails)}</textarea>
                          </div>
                           <div class="form-group">
                              <label for="price">Price ($)</label>
-                             <input type="number" id="price" name="price" step="0.01" min="0" value="<c:out value='${param.price}'/>">
+                             <input type="number" id="price" name="price" step="0.01" min="0" value="${guitar.price}">
                          </div>
                     </div>
 
-                     <%-- Images Section --%>
-                     <div class="form-section">
-                        <h3 class="section-title">Images</h3>
-                         <div class="form-group">
-                            <label for="images">Upload Images</label>
-                            <input type="file" id="images" name="images" multiple accept="image/jpeg, image/png, image/webp, image/gif">
-                            <span class="file-upload-info">Select one or more images. The first image will be the main thumbnail.</span>
-                         </div>
-                     </div>
+                    <div class="form-section">
+                        <h3 class="section-title">Image</h3>
+                        <div class="form-group">
+                            <label for="mainImageUrl">Main Image URL</label>
+                            <input type="url" id="mainImageUrl" name="mainImageUrl" placeholder="Enter full URL e.g., https://example.com/image.jpg" value="${fn:escapeXml(mainImageUrlValue)}">
+                            <span class="image-url-info">Provide a direct link to an online image.</span>
+                        </div>
+                    </div>
 
-                    <%-- Submit Button --%>
                     <button type="submit" class="btn btn-submit-guitar">Add Guitar to Inventory</button>
-
                 </form>
             </div>
         </div>

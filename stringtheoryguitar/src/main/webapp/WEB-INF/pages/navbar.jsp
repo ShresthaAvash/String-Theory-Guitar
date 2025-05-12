@@ -26,7 +26,7 @@
                 <li><a href="${pageContext.request.contextPath}/dashboard" class="nav-item ${param.activePage == 'dashboard' ? 'active' : ''}">Dashboard</a></li>
                 <li><a href="${pageContext.request.contextPath}/manage-inventory" class="nav-item ${param.activePage == 'admin-inventory' ? 'active' : ''}">Inventory</a></li>
                 <li><a href="${pageContext.request.contextPath}/add-guitar" class="nav-item ${param.activePage == 'add-guitar' ? 'active' : ''}">Add Guitar</a></li>
-                <li><a href="${pageContext.request.contextPath}/reports" class="nav-item ${param.activePage == 'reports' ? 'active' : ''}">Reports</a></li>
+                <%-- The "Reports" link was here --%>
              </c:if>
         </c:if>
     </ul>
@@ -35,10 +35,8 @@
         <c:choose>
             <c:when test="${not empty currentUser}">
                 <span class="welcome-text">
-                    <%-- Using username as primary display --%>
                     Welcome, <c:out value="${currentUser.username}"/>!
                     (<c:out value="${currentUser.role}"/>)
-                     <%-- Alternative: Welcome, <c:out value="${currentUser.fullName}"/>! (<c:out value="${currentUser.role}"/>) --%>
                 </span>
                 <a href="${pageContext.request.contextPath}/logout" class="btn btn-logout-style">Logout</a>
             </c:when>
@@ -51,6 +49,7 @@
 </nav>
 
 <style>
+    /* Your existing navbar CSS */
     .navbar {
         background-color: #333333;
         padding: 15px 30px;

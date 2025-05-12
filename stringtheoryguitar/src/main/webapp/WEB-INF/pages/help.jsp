@@ -26,7 +26,6 @@
             font-size: 1.4em; color: #ffffff; font-weight: 700; margin-top: 0; margin-bottom: 20px; text-align: left;
         }
 
-        /* FAQ Accordion */
         .faq-item {
             background-color: #444444; border-radius: 8px; margin-bottom: 15px; overflow: hidden; border: 1px solid #555;
             transition: background-color 0.2s ease;
@@ -42,16 +41,16 @@
         .faq-item summary:hover {
             background-color: #505050;
         }
-        .faq-item summary .marker { /* Custom '+' marker */
+        .faq-item summary .marker { 
             font-size: 1.4em; font-weight: bold; color: #FFC107; transition: transform 0.3s ease-out;
         }
-        .faq-item[open] summary .marker { /* Rotate to 'x' */
+        .faq-item[open] summary .marker { 
              transform: rotate(45deg);
         }
-         .faq-item[open] summary { /* Style header when open */
+         .faq-item[open] summary { 
              background-color: #4a4a4a; border-bottom: 1px solid #555;
          }
-        .faq-content { /* Answer area */
+        .faq-content { 
             padding: 20px 25px; font-size: 1em; color: #e0e0e0; line-height: 1.6; font-weight: 400;
             animation: fadeIn 0.4s ease-out;
         }
@@ -67,7 +66,6 @@
         .faq-content ul { padding-left: 25px; margin-top: 10px;}
         .faq-content li { margin-bottom: 8px;}
 
-        /* Responsive */
         @media (max-width: 768px) {
              .page-title { font-size: 2em; } .section-heading { font-size: 1.2em; }
              .faq-item summary { font-size: 1em; padding: 12px 15px;} .faq-content { font-size: 0.95em; padding: 15px 20px; }

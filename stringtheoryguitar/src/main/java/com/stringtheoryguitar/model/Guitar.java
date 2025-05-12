@@ -1,8 +1,11 @@
-package com.stringtheoryguitar.model; 
+// src/main/java/com/stringtheoryguitar/model/Guitar.java
+package com.stringtheoryguitar.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+// import java.util.ArrayList; // No longer needed if only one URL
+// import java.util.List;    // No longer needed
 
 public class Guitar implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -10,7 +13,7 @@ public class Guitar implements Serializable {
     private int id;
     private String brand;
     private String model;
-    private String guitarType; 
+    private String guitarType;
     private Integer yearProduced;
     private String serialNumber;
     private String finishColor;
@@ -22,24 +25,27 @@ public class Guitar implements Serializable {
     private String conditionDetails;
     private BigDecimal price;
     private Timestamp dateAdded;
-    private String imagePaths;
-    private String mainImagePath;
 
-    // Default constructor
-    public Guitar() {}
+    private String mainImageUrl; // NEW FIELD for online image URL
+
+    // private List<GuitarImage> images; // REMOVED or commented out
+
+    public Guitar() {
+        // this.images = new ArrayList<>(); // REMOVED or commented out
+    }
 
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getBrand() { return brand; } // Updated getter
-    public void setBrand(String brand) { this.brand = brand; } // Updated setter
+    public String getBrand() { return brand; }
+    public void setBrand(String brand) { this.brand = brand; }
 
     public String getModel() { return model; }
     public void setModel(String model) { this.model = model; }
 
-    public String getGuitarType() { return guitarType; } // Added getter
-    public void setGuitarType(String guitarType) { this.guitarType = guitarType; } // Added setter
+    public String getGuitarType() { return guitarType; }
+    public void setGuitarType(String guitarType) { this.guitarType = guitarType; }
 
     public Integer getYearProduced() { return yearProduced; }
     public void setYearProduced(Integer yearProduced) { this.yearProduced = yearProduced; }
@@ -74,14 +80,12 @@ public class Guitar implements Serializable {
     public Timestamp getDateAdded() { return dateAdded; }
     public void setDateAdded(Timestamp dateAdded) { this.dateAdded = dateAdded; }
 
-    public String getImagePaths() { return imagePaths; }
-    public void setImagePaths(String imagePaths) { this.imagePaths = imagePaths; }
 
-    public String getMainImagePath() { return mainImagePath; }
-    public void setMainImagePath(String mainImagePath) { this.mainImagePath = mainImagePath; }
+    public String getMainImageUrl() { return mainImageUrl; }
+    public void setMainImageUrl(String mainImageUrl) { this.mainImageUrl = mainImageUrl; }
 
     @Override
-    public String toString() { // Updated toString
-        return "Guitar [id=" + id + ", brand=" + brand + ", model=" + model + "]";
+    public String toString() {
+        return "Guitar [id=" + id + ", brand=" + brand + ", model=" + model + ", year=" + yearProduced + "]";
     }
 }

@@ -38,7 +38,6 @@ public class ResetPasswordServlet extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
         String errorMessage = null; boolean passwordResetSuccess = false; boolean tokenInvalid = false;
 
-        // Validation
         if (token == null || token.trim().isEmpty()) { errorMessage = "Invalid/missing reset token."; tokenInvalid = true;
         } else if (newPassword == null || newPassword.isEmpty() || confirmPassword == null || confirmPassword.isEmpty()) { errorMessage = "Both password fields are required.";
         } else if (newPassword.length() < 8) { errorMessage = "Password must be at least 8 characters long.";
@@ -48,22 +47,20 @@ public class ResetPasswordServlet extends HttpServlet {
             try {
                 conn = DBUtil.getConnection(); conn.setAutoCommit(false);
 
-                // Find user by valid token
                 String findSql = "SELECT id FROM users WHERE reset_token = ? AND reset_token_expiry > ?";
                 psFind = conn.prepareStatement(findSql); psFind.setString(1, token); psFind.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now())); rs = psFind.executeQuery();
 
-                if (rs.next()) { // Token valid
+                if (rs.next()) { 
                     int userId = rs.getInt("id");
-                    String hashedPassword = PasswordUtil.hashPassword(newPassword); // Hash new password
+                    String hashedPassword = PasswordUtil.hashPassword(newPassword);
 
-                    // Update password, clear token fields
                     String updateSql = "UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?";
                     psUpdate = conn.prepareStatement(updateSql); psUpdate.setString(1, hashedPassword); psUpdate.setInt(2, userId);
 
-                    if (psUpdate.executeUpdate() > 0) { // Update successful
+                    if (psUpdate.executeUpdate() > 0) {
                         conn.commit(); passwordResetSuccess = true;
                     } else { conn.rollback(); errorMessage = "Failed to update password. Please try again."; tokenInvalid = true; }
-                } else { // Token invalid or expired
+                } else { 
                     conn.rollback(); errorMessage = "Password reset link is invalid or has expired."; tokenInvalid = true;
                 }
             } catch (SQLException e) { errorMessage = "Database error during reset."; e.printStackTrace(); try { if (conn != null) conn.rollback(); } catch (SQLException ex) {} tokenInvalid = true;
@@ -72,13 +69,13 @@ public class ResetPasswordServlet extends HttpServlet {
         }
 
         if (passwordResetSuccess) {
-            response.sendRedirect(request.getContextPath() + "/login?reset=success"); // Redirect to Login on success
+            response.sendRedirect(request.getContextPath() + "/login?reset=success"); 
         } else {
             request.setAttribute("errorMessage", errorMessage);
             request.setAttribute("tokenInvalid", tokenInvalid ? Boolean.TRUE : null);
-             if (!tokenInvalid && token != null) { request.setAttribute("token", token); } // Keep token if still needed by form
+             if (!tokenInvalid && token != null) { request.setAttribute("token", token); }
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/pages/reset_password.jsp");
-            dispatcher.forward(request, response); // Forward back to reset form on error
+            dispatcher.forward(request, response); 
         }
     }
 }

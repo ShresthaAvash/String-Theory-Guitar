@@ -34,7 +34,6 @@ public class LoginServlet extends HttpServlet {
         } else {
             try {
                 conn = DBUtil.getConnection();
-                // Fetch user including hashed password and full name
                 String sql = "SELECT id, username, email, full_name, role, password FROM users WHERE username = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, username);
@@ -42,13 +41,12 @@ public class LoginServlet extends HttpServlet {
 
                 if (rs.next()) {
                     String storedHashedPassword = rs.getString("password");
-                    // Verify password using BCrypt utility
                     if (PasswordUtil.checkPassword(password, storedHashedPassword)) {
                          int id = rs.getInt("id");
                          String email = rs.getString("email");
-                         String fullName = rs.getString("full_name"); // Get full name
+                         String fullName = rs.getString("full_name");
                          String role = rs.getString("role");
-                         user = new User(id, username, email, fullName, role); // Use updated constructor
+                         user = new User(id, username, email, fullName, role);
                     } else {
                         errorMessage = "Invalid username or password.";
                         request.setAttribute("username", username);
